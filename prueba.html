@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<head>
+ <meta name="apple-mobile-web-app-capable" content="yes">
+         <script src="https://aframe.io/releases/0.3.2/aframe.min.js"></script>
+        <script src="https://rawgit.com/oscarmarinmiro/aframe-video-controls/master/dist/aframe-video-controls.min.js"></script>
+        <script src="https://rawgit.com/aframevr/aframe/917c06889ee1f3f79b7b1bbd9eab9815f9512503/dist/aframe.min.js"></script>
+         <script src="https://npmcdn.com/aframe-animation-component@3.0.1"></script>
+            <script src="https://npmcdn.com/aframe-event-set-component@3.0.1"></script>
+         <script src="https://npmcdn.com/aframe-layout-component@3.0.1"></script>
+         <script src="https://npmcdn.com/aframe-template-component@3.0.1"></script>
+    <script src="js/set-image.js"></script>
+    <script src="js/update-raycaster.js"></script>
+
+     
+<script>
+   
+    var count = 240;
+    var count1 = 240;
+    var counter = setInterval(timer, 1000); //1000 will  run it every 1 second
+
+    function timer() {
+        count = count - 1;
+        count1 = count1 - 1;
+        if (count <= 235) {
+           
+            count1 = count - 1;
+            clearInterval(counter);
+            //counter ended, do something here
+            
+            pausePlayback();
+           
+            console.log("segundos", count);
+            return;
+        }
+        if (count1 <= 228) {
+            console.log("llega", count);
+            clearInterval(counter);
+            //counter ended, do something here
+
+            meadow.play();
+            return;
+        }
+
+        document.getElementById("meadow").innerHTML = count + " secs"; // watch for spelling
+    }
+
+
+    
+function manageEvent(eventObj, event, eventHandler) {
+   if (eventObj.addEventListener) {
+      eventObj.addEventListener(event, eventHandler,false);
+   } else if (eventObj.attachEvent) {
+      event = "on" + event;
+      eventObj.attachEvent(event, eventHandler);
+   }
+}
+
+window.onload=function() {
+
+ 
+
+  // setup for video playback
+  var meadow = document.getElementById("meadow");
+  manageEvent(meadow,"timeupdate",reportProgress);
+
+  // video fallback
+ // var detect = document.createElement("video");
+  //if (!detect.canPlayType) {
+  //  document.getElementById("controls").style.display="none";
+  //}
+}
+
+// start video, enable stop and pause
+// disable play
+function startPlayback() {
+    
+ 
+  meadow.play();
+  
+
+}
+
+// pause video, enable start, disable stop
+// disable pause
+function pausePlayback() {
+   
+    meadow.pause();
+    
+        
+    
+       
+    
+}
+   
+
+
+// stop video, return to zero time
+// enable play, disable pause and stop
+
+
+
+
+</script>
+
+</head>
+<body>
+    
+    <a-scene>
+            <a-assets>
+        
+                <video id="meadow" autoplay loop="true"  src= "video/SAM.mp4"> 
+                  <img id="image" src="video/images.jpg"> 
+                    
+                    <script id="link" type="text/nunjucks">
+          <a-plane class="link" height="1" width="1"
+            event-set__1="_event: mousedown; scale: 1 1 1"
+            event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+            event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+            event-set__4="_event: mouseleave; scale: 1 1 1"
+            set-image="on: click; target: #image; src: {{ src }}"
+            sound="on: click; src: #click-sound"
+            update-raycaster="#cursor"></a-plane>
+        </script>
+
+         
+        
+            </a-assets>
+           <a-curvedimage src="#image" height="5.0" radius="7" theta-length="90"
+               position="-10 0 0" rotation="0 -170 0" scale="0.8 0.8 0.8">
+         
+       </a-curvedimage>
+            <a-videosphere src="#meadow" rotation="0 180 0">
+
+              
+            </a-videosphere>
+       
+            <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
+            <!--<a-videosphere src="video/SphereVideo.webm"></a-videosphere>-->
+        </a-scene>
+
+
+
+<button id="start">Play</button>
+<button id="stop">Stop</button>
+<button id="pause">Pause</button>
+
+</body>
