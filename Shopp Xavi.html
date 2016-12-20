@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+   <script src="https://rawgit.com/oscarmarinmiro/aframe-video-controls/master/dist/aframe-video-controls.min.js"></script>
+    <script src="https://rawgit.com/aframevr/aframe/917c06889ee1f3f79b7b1bbd9eab9815f9512503/dist/aframe.min.js"></script>
+    <script src="https://npmcdn.com/aframe-animation-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-event-set-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-layout-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-template-component@3.0.1"></script>
+    <script src="components/set-image.js"></script>
+    <script src="components/update-raycaster.js"></script>
+      <script>
+   
+    var count = 240;
+    var count1 = 240;
+    var counter = setInterval(timer, 1000); //1000 will  run it every 1 second
+   
+   
+    function timer() {
+        count = count - 1;
+        
+       
+       
+        if (count <= 235) {
+           
+          
+            document.getElementById("cubes-thumb").style.opacity= 1;
+            console.log("opacidad");
+            //counter ended, do something here
+          
+            pausePlayback();
+          
+           
+            console.log("segundos", count);
+            return;
+        }
+        if (count <= 228) {
+            console.log("llega", count);
+           
+            //counter ended, do something here
+
+            startPlayback();
+            return;
+        }
+
+      
+    }
+
+          
+        
+function manageEvent(eventObj, event, eventHandler) {
+   if (eventObj.addEventListener) {
+      eventObj.addEventListener(event, eventHandler,false);
+   } else if (eventObj.attachEvent) {
+      event = "on" + event;
+      eventObj.attachEvent(event, eventHandler);
+   }
+}
+
+window.onload=function() {
+
+ 
+
+  // setup for video playback
+    var meadow = document.getElementById("meadow");
+    
+  manageEvent(meadow,"timeupdate",reportProgress);
+    
+  // video fallback
+ // var detect = document.createElement("video");
+  //if (!detect.canPlayType) {
+  //  document.getElementById("controls").style.display="none";
+  //}
+}
+
+// start video, enable stop and pause
+// disable play
+function startPlayback() {
+    
+ 
+  meadow.play();
+  
+
+}
+
+// pause video, enable start, disable stop
+// disable pause
+function pausePlayback() {
+    
+    meadow.pause();
+   
+    if (count <= 228) {
+        console.log("llega", count);
+
+        //counter ended, do something here
+
+        startPlayback();
+        return;
+    }
+    
+        
+    
+       
+    
+}
+   
+
+
+// stop video, return to zero time
+// enable play, disable pause and stop
+
+
+
+
+</script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+         
+           <video id="meadow" class="VideoTagLink" autoplay loop="true" crossorigin="anonymous" Access-Control-Allow-Origin="http://beworld.lexonhost.com/videos/tossamar/TossaMarLandscape.mp4/">
+               <source src="http://beworld.lexonhost.com/videos/tossamar/TossaMarLandscape.mp4"> 
+           </video> 
+           
+             
+              
+        <img  id="cubes-thumb" crossorigin="anonymous" src="video/images.jpg">
+       <audio id="click-sound" src="sonido/click.mp3"> <//audio>
+          <a-asset-item id="plano-mtl" src="modelos/plano.mtl"></a-asset-item>
+
+        <!-- Image link template to be reused. -->
+        <script id="link" type="text/nunjucks">
+
+
+          <a-curvedimage class="link" height="1" width="40"
+            material="shader: flat; src: {{ thumb }}; opacity:0"
+            event-set__1="_event: mousedown; scale: 1 1 1"
+            event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+            event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+            event-set__4="_event: mouseleave; scale: 1 1 1"
+            set-image="on: click; target: #image-360; src: {{ src }}"
+
+            update-raycaster="#cursor"> </a-curvedimage>
+        </script>
+      </a-assets>
+
+
+         <a-curvedimage id="curva" src="#cubes-thumb" class="link" height="2.7" width="100" position="-2 0 -4" rotation="0 -180 0"
+            onmouseover="" material="opacity:0"
+             event-set__1="_event: mousedown; scale: 1 1 1; src: #click-sound"
+            event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+            event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+            event-set__4="_event: mouseleave; scale: 1 1 1">
+            
+         </a-curvedimage>
+
+
+
+         <a-entity src="#plano-mtl" height="100" width="100"></a-entity>
+    <a-videosphere src="#meadow" rotation="0 180 0">
+        </a-videosphere>
+
+      <!-- Image links. -->
+      <a-entity id="links" layout="type: line; margin: 1.5"  position="0 -1 -4" rotation="0 -90 0" >
+        <a-entity template="src: #link"  data-src="#cubes" data-thumb="#cubes-thumb"></a-entity>
+
+      </a-entity>
+
+      <!-- Camera + cursor. -->
+      <a-entity camera look-controls>
+        <a-cursor id="cursor"
+            
+          animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+          animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+          event-set__1="_event: mouseenter; color: springgreen"
+          event-set__2="_event: mouseleave; color: black"
+          raycaster="objects: .link"></a-cursor>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
